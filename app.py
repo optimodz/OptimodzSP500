@@ -8,7 +8,7 @@ from sp500_swing_scanner import run_scanner, CONFIG, check_market_regime
 
 # --- 1. ตั้งค่าหน้าตาของ Web App (UX/UI Page Config) ---
 st.set_page_config(
-    page_title="S&P 500 Scanner",
+    page_title="S&P500 Scanner By Optimodz",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="collapsed"
