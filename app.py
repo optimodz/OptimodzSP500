@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+import pytz # <-- 1. เพิ่มไลบรารีจัดการโซนเวลา (อ้างอิงตามที่คุณอัปเดตใน requirements.txt)
 
 # ดึงฟังก์ชันสแกนและเช็คตลาดจากสคริปต์หลักของคุณ
 from sp500_swing_scanner import run_scanner, CONFIG, check_market_regime
@@ -13,13 +14,17 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# --- 2. ส่วนหัวของหน้าเว็บ (Header Area) ---
+# --- 2. ตั้งค่าโซนเวลาประเทศไทย (UX Fix: ล็อกเวลาไทยไม่ให้เพี้ยนตามเซิร์ฟเวอร์ Cloud) ---
+tz_bkk = pytz.timezone('Asia/Bangkok')
+now_bkk = datetime.now(tz_bkk) # <-- ดึงเวลาปัจจุบันโดยระบุโซนเวลาเป็นกรุงเทพฯ เสมอ
+
+# --- 3. ส่วนหัวของหน้าเว็บ (Header Area) ---
 st.title("📊 S&P500 Scanner By Optimodz")
-st.caption(f"เวลาปัจจุบัน (BKK): {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+st.caption(f"เวลาปัจจุบัน (BKK): {now_bkk.strftime('%Y-%m-%d %H:%M:%S')}") # <-- เปลี่ยนมาใช้เวลาไทย (now_bkk)
 
 st.markdown("---")
 
-# --- 3. โซนควบคุมและแสดงสถานะตลาด (Control & Market Status Panel) ---
+# --- 4. โซนควบคุมและแสดงสถานะตลาด (Control & Market Status Panel) ---
 col_action, col_spy, col_cap = st.columns([1, 2, 1.5])
 
 with col_action:
@@ -43,14 +48,14 @@ with col_cap:
 
 st.markdown("---")
 
-# --- 4. โซนผลลัพธ์การสแกนหุ้นใหม่ของวันนี้ (Scan Results Area) ---
+# --- 5. โซนผลลัพธ์การสแกนหุ้นใหม่ของวันนี้ (Scan Results Area) ---
 st.subheader("🏆 หุ้น Top Picks ที่ผ่านเงื่อนไขวันนี้")
 
 if run_button:
     # แสดงตัวโหลดอนิเมชันให้ผู้ใช้รู้ว่าระบบกำลังดึงข้อมูลอยู่ (UX Feedback)
     with st.spinner("กำลังดาวน์โหลดและวิเคราะห์ข้อมูลหุ้น S&P 500 ทั้งหมดจาก Yahoo Finance..."):
         
-        # รันฟังก์ชันสแกนหลัก (ตัวนี้จะแอบสร้าง CSV บน Cloud ชั่วคราวช่างมันครับ เราดึงตัวแปรมาใช้โชว์หน้าจอพอ)
+        # รันฟังก์ชันสแกนหลัก (ตัวนี้จะแอบสร้าง CSV บน Cloud ชั่วคราวช่างมันครับ เราดึงตัวแปรมาใช้โชว์หน้าจอพอ)[cite: 2]
         top_df = run_scanner()
         
         if top_df is not None and not top_df.empty:
