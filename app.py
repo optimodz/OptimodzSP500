@@ -14,7 +14,7 @@ st.set_page_config(
 )
 
 # --- 2. ส่วนหัวของหน้าเว็บ (Header Area) ---
-st.title("📊 S&P 500 Short-Term Swing Scanner")
+st.title("📊 S&P500 Scanner By Optimodz")
 st.caption(f"เวลาปัจจุบัน (BKK): {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 st.markdown("---")
